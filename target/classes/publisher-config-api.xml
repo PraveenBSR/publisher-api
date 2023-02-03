@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="customer-publisher-praveen-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${listener.port}" />
+    </http:listener-config>
+    <apikit:config name="customer-publisher-praveen-api-config" api="resource::cba16938-95f4-4fe9-ae29-6b5d3ecbb2cf:customer-publisher-praveen-api:1.0.2:raml:zip:customer-publisher-praveen-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <jms:config name="JMS_Config" doc:name="JMS Config" doc:id="d3a56ffd-69fd-4416-90ff-8dd737a78a52" >
+		<jms:active-mq-connection username="${activemq.username}" password="${secure::activemq.password}" >
+			<jms:factory-configuration brokerUrl="${activemq.brokerurl}" initialRedeliveryDelay="${activemq.delay}" redeliveryDelay="${activemq.delay}" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="3e24c986-47b2-4e37-86a6-d0aa4bb96d18" file="config/${env}.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="34c61d1f-6a1c-46c1-afb3-25045e9e2d06" file="config/${env}.yaml" key="${secure.key}" />
+	<configuration doc:name="Configuration" doc:id="5e740b49-b5d7-436f-87eb-e96f327d5096" defaultErrorHandler-ref="publisher-errorhandling-apiError_Handler" />
+	
+</mule>

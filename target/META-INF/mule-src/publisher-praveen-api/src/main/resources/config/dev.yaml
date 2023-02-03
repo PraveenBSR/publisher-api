@@ -1,0 +1,9 @@
+listener:
+     path: "/api/*"
+     port: "8081"
+activemq:
+     username: "admin"
+     password: "![j2u1/GHzUnd2hyywA2Bl4g==]"
+     brokerurl: "tcp://localhost:61616"
+     delay: "20000"
+     destination: "demo"

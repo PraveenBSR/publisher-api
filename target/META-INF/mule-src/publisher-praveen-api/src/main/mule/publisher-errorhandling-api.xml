@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="publisher-errorhandling-apiError_Handler" doc:id="d8ce6690-843a-409c-ac4f-5c6c9592efb8" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="79c50a59-de12-4f63-98fa-cf1ce2d07e58" type="APIKIT:BAD_REQUEST">
+			<ee:transform doc:name="Transform Message" doc:id="44fbfa3d-037f-4a6a-991d-327f32cdade7" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode": 400,
+	"response": "bad request",
+	"errorMessage" : error.description
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1f921b25-552c-4018-a707-305c7b95163d" type="APIKIT:NOT_FOUND">
+			<ee:transform doc:name="Transform Message" doc:id="32f44fed-79fa-4f6b-886c-6eb5a4748f14" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 404,
+	"Message": "resource not found",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4f8b8fb6-163d-4869-abf3-845c2ce9b558" type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform doc:name="Transform Message" doc:id="50d6e530-5101-415f-8bbf-e4c9bfa7f050" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 405,
+	"Message": "method not allowed",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[405]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ffb25885-6339-49ca-afb0-4a57bf6f89c0" type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform doc:name="Transform Message" doc:id="e2315e6b-cffe-4180-bc19-558632e5d135" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 406,
+	"Message": "not acceptable",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="12d91447-f84b-4a5e-ae4b-9bba6d347c01" type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="Transform Message" doc:id="e69b85f4-2fc4-4703-9d5a-aa2284580d86" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 415,
+	"Message": "unsupported media type",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="288a9dcb-2004-44a2-8a0b-3e4d2e41cd56" type="EXPRESSION">
+			<ee:transform doc:name="Transform Message" doc:id="a6b98876-161a-4f90-bb4b-0e7bce932e1e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "error occurred while evaluating a DataWeave expression",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ab8118f6-2146-4682-9cd8-c94af295b26c" type="JMS:ACK">
+			<ee:transform doc:name="Transform Message" doc:id="8d1c5c70-b14a-4d55-b24b-194620bd1deb" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "There was an error in the context of the acknowledgment of an inflight message",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c0d465e1-74a8-4c0a-9598-2677f7496d1f" type="JMS:CONNECTIVITY">
+			<ee:transform doc:name="Transform Message" doc:id="7ca920a5-58f7-4e96-9f83-3def538ffbd3" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "The connection is no longer valid. It is disposed of, but you can apply a reconnection policy if defined in the application setup",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="32a11d06-1dbe-4395-9182-10ca51e7a4e9" type="JMS:CONSUMING">
+			<ee:transform doc:name="Transform Message" doc:id="53f4bda5-a982-40a2-879f-c1931859c104" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "An error occurred while consuming messages from WMQ. This error might relate to the absence of a pending message",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="792edd37-92ef-4cd4-8c42-f086a3928fec" type="JMS:DESTINATION_NOT_FOUND">
+			<ee:transform doc:name="Transform Message" doc:id="6a9fd9ef-2252-4a73-8f04-f0dde08b7b2b" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "JMS Connector is not able to find or create the destination",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="64bb674a-ca0f-4f20-8ed8-c99fd3dd444e" type="JMS:RETRY_EXHAUSTED">
+			<ee:transform doc:name="Transform Message" doc:id="42552f3f-f693-4796-aa8f-c81491c622d7" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "The maximum number of retries for the operation is reached",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="006da3f1-50ff-4bfb-ab26-8fe2f9ded9ad" type="JMS:SECURITY">
+			<ee:transform doc:name="Transform Message" doc:id="1128b712-c498-4118-a5b7-cd879c869cf6" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "The thrown exception in due to of security-related errors",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d3aa08d0-c765-4fc1-8321-b7dd07f48b9d" type="JMS:TIMEOUT">
+			<ee:transform doc:name="Transform Message" doc:id="5119312f-9dcc-417c-a9e7-7b56fd9573ea" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "The timeout for the requested operation is exceeded",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="290f7663-ac88-4df1-9cc6-e038e6fde82b" type="JMS:ILLEGAL_BODY">
+			<ee:transform doc:name="Transform Message" doc:id="33658399-cc72-40e3-9c97-bc901163f140" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "The message body is invalid or cannot be converted to a supported type",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0bd4999a-dead-4a4b-8c91-3dbb1bcde2a9" type="JMS:PUBLISHING">
+			<ee:transform doc:name="Transform Message" doc:id="ea8b4e95-e495-4799-a784-9c650b3357e1" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "There is an error while publishing to the target queue or topic",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8c9008d4-59cc-484f-9cfc-bcd3917fb985" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="e51cf110-2614-4daa-af7a-4c7323888e40" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode" : 500,
+	"Message": "internal server error",
+	"ErrorMessage": error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+</mule>
